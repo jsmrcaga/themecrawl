@@ -6,6 +6,7 @@ class Word{
 		this.weight = weight;
 	}
 }
+models.Word = Word;
 
 class Dictionary{
 	constructor(words, themeThreshold, crawlThreshold){
@@ -25,6 +26,7 @@ class Dictionary{
 		return score;
 	}
 }
+models.Dictionary = Dictionary;
 
 class Theme{
 	constructor(name, dictionary){
@@ -36,5 +38,6 @@ class Theme{
 		return this.dictionary.compare(text);
 	}
 }
+models.Theme = Theme;
 
 module.exports = models;
