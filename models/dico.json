@@ -1,0 +1,66 @@
+[
+    {"name":"JeuVideo","dictionary":
+     {"words":
+      [
+	  {"word":"jeu","weight":5},
+	  {"word":"Mario","weight":10},
+	  {"word": "borne", "weight":1},
+	  {"word": "arcade", "weight":3},
+	  {"word": "console", "weight":5},
+	  {"word": "jeux", "weight":5},
+	  {"word": "clavier", "weight":1},
+	  {"word": "souris", "weight":1},
+	  {"word": "joystick", "weight":5},
+	  {"word": "boutons", "weight":1},
+	  {"word": "plateformes", "weight":1},
+	  {"word": "plateforme", "weight":1},
+	  {"word": "joueur", "weight":5},
+	  {"word": "Pong", "weight":5},
+	  {"word": "NES", "weight":5},
+	  {"word": "playstation", "weight":10},
+	  {"word": "xbox", "weight":10},
+	  {"word": "atari", "weight":10},
+	  {"word": "konami", "weight":10},
+	  {"word": "PC", "weight":5},
+	  {"word": "Crash Bandicoot", "weight":10},
+	  {"word": "Lara Croft", "weight":10},
+	  {"word": "Link", "weight":5},
+	  {"word": "Megaman", "weight":10},
+	  {"word": "Pacman", "weight":10},
+	  {"word": "Pac-man", "weight":10},
+	  {"word": "Pikachu", "weight":10},
+	  {"word": "Pokemon", "weight":10},
+	  {"word": "Rayman", "weight":10},
+	  {"word": "Samus Aran", "weight":10},
+	  {"word": "Solid Snake", "weight":10},
+	  {"word": "Metal Gear Solid", "weight":10},
+	  {"word": "Sonic", "weight":10},
+	  {"word": "Game", "weight":10},
+	  {"word": "manette", "weight":10},
+	  {"word": "carte graphique", "weight":5},
+	  {"word": "MAME", "weight":10},
+	  {"word": "emulateur", "weight":5},
+	  {"word": "Space Invaders", "weight":10},
+	  {"word": "Nintendo", "weight":10},
+	  {"word": "Wii", "weight":10},
+	  {"word": "Kinect", "weight":10},
+	  {"word": "EyeToy", "weight":10},
+	  {"word": "Oculus Rift", "weight":10},
+	  {"word": "Sony", "weight":5},
+	  {"word": "Microsoft", "weight":5},
+	  {"word": "Action", "weight":5},
+	  {"word": "aventure", "weight":5},
+	  {"word": "Beat them all", "weight":10},
+	  {"word": "Gestion", "weight":2},
+	  {"word": "fantasy", "weight":7},
+	  {"word": "MMORPG", "weight":10},
+	  {"word": "Twitch", "weight":10}  
+      ],"tt":50,"ct":45}
+    },
+    {"name":"test","dictionary":
+     {"words":
+      [
+	  {"word":"test","weight":0}
+      ],"tt":50,"ct":45}
+    }
+]
