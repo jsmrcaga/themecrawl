@@ -4,10 +4,12 @@
 		// NORTHERN LIGHT
 var express = require('express');
 var app = express();
+var http = require('http');
 
+var server = http.createServer(app);
 var WebSocketServer = require('ws').Server;
 
-var wss = WebSocketServer({port: process.env.PORT});
+var wss = WebSocketServer({server: server});
 wss.broadcast = function(message){
 	wss.clients.forEach(function(ws){
 		ws.send(message);
@@ -57,6 +59,6 @@ app.post('/threshold', function(req, res, err){
 	// update thresholds
 });
 
-app.listen(process.env.PORT, function(){
-	console.log('Server listening!');
+server.listen(process.env.PORT, function(){
+	console.log(`Server listening! ${process.env.PORT}`);
 });
