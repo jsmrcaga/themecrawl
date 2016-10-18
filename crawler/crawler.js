@@ -2,12 +2,12 @@ var request = require('request');
 var cheerio = require('cheerio');
 var unfluff = require('unfluff');
 
-
-var crawler = function Crawler(app){
+function Crawler(app, database){
 	this.ok = true;
 };
+var crawler = Crawler;
 
-crawler.prototype.generateUUID = function generateUUID(){
+Crawler.generateUUID = function generateUUID(){
 	function s4(){
 		return Math.floor((1+Math.random()) * 0x10000).toString(16).substring(1);
 	}
@@ -15,11 +15,11 @@ crawler.prototype.generateUUID = function generateUUID(){
 	return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
 };
 
-crawler.prototype.stop = function(){
+Crawler.prototype.stop = function(){
 	this.ok = false;
 };
 
-crawler.prototype.crawl = function(links, theme){
+Crawler.prototype.crawl = function(links, theme){
 	for(var link of links){
 		if(!this.ok){
 			break;
@@ -33,7 +33,7 @@ crawler.prototype.crawl = function(links, theme){
 
 				var result = {
 					node: {
-						id: this.generateUUID(),
+						id: Crawler.generateUUID(),
 						name: currentLink,
 						score: res.score,
 						theme: false,
@@ -58,7 +58,11 @@ crawler.prototype.crawl = function(links, theme){
 	}
 };
 
-crawler.prototype.get = function(url, theme, callback){
+Crawler.prototype.get = function(url, theme, callback){
+	if(!this.ok){
+		return callback(null, null);
+	}
+
 	var options = {
 		url: url,
 		headers:{
@@ -66,33 +70,53 @@ crawler.prototype.get = function(url, theme, callback){
 		}
 	};
 
-	request(options, function(err, res, body){
-		if(err){
-			// send error via websocket
-			console.error(url, err);
-			return callback(err, null);
+	request(options, (function(principal_url){
+		return function(err, res, body){
+			if(err){
+				// send error via websocket
+				console.error(url, err);
+				return callback(err, null);
+			}
+
+			var host = (new URL(url)).hostname;
+
+			var $ = cheerio.load(body);
+			// todo : delete same links, but add as reference!!!!
+			var raw_links = $('a');
+			// check links to see if they are different
+			var links = [];
+			principal_url = new URL(principal_url);
+			for(var l of raw_links){
+				var link = new URL(l.href);
+
+				if(l in db){
+					// add link in graph
+					continue;
+				}
+
+				if(link.host === principal_url.host && link.pathname === principal_url.pathname){
+					// auto redit
+					// add link in graph
+					continue;
+				}
+
+			}
+
+			// we do not pass language 
+			// crawler can be in any language
+			var text = unfluff(body);
+
+			var comp = theme.compare(text);
+			var results = {
+				theme: comp >= theme.dictionary.tt,
+				crawl: comp >= theme.dictionary.ct,
+				score: comp,
+				links: links
+			};
+
+			return callback(null, results);
 		}
-
-		var host = (new URL(url)).hostname;
-
-		var $ = cheerio.load(body);
-		// var links = $('a').filter(element => (new URL(element.href)).hostname !== host);
-		var links = $('a').map(element => element = element.href);
-
-		// we do not pass language 
-		// crawler can be in any language
-		var text = unfluff(body);
-
-		var comp = theme.compare(text);
-		var results = {
-			theme: comp >= theme.dictionary.tt,
-			crawl: comp >= theme.dictionary.ct,
-			score: comp,
-			links: links
-		};
-
-		return callback(null, results);
-	});
+	})(url));
 };
 
 module.exports = crawler;

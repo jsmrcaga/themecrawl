@@ -53,6 +53,10 @@ app.get('/crawl', function(req, res, err){
 	res.sendStatus(200);
 });
 
+app.post('/threshold', function(req, res, err){
+	// update thresholds
+});
+
 app.listen(process.env.PORT, function(){
 	console.log('Server listening!');
 });
