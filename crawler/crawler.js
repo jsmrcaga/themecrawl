@@ -1,6 +1,7 @@
 var request = require('request');
 var cheerio = require('cheerio');
 var unfluff = require('unfluff');
+var ProgressBar = require('progress');
 
 var db = require('../database/db.js');
 
@@ -25,19 +26,31 @@ Crawler.generateUUID = function generateUUID(){
 	return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
 };
 
-Crawler.prototype.queue = function(links, fromId){
+Crawler.prototype.queue = function(links, fromId, theme){
 	this.waiting.push({
 		links: links,
 		parent: fromId,
-		counter: links.length
+		counter: links.length,
+		theme: theme
 	});
+	console.log(`Queued ${fromId} with ${links.length} nodes`, this.waiting.length);
+};
+
+Crawler.prototype.pop = function(){
+	this.waiting = this.waiting.slice(1);
 };
 
 Crawler.prototype.stop = function(){
 	this.ok = false;
 };
 
-Crawler.prototype.crawl = function(links, theme, previousLinkId){
+Crawler.prototype.continue = function(){
+	this.pop();
+	console.log('\tLaunching new crawl for', this.waiting[0].parent);
+	this.crawl(this.waiting[0].links, this.waiting[0].theme, this.waiting[0].parent);
+};	
+
+Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 	for(var link of links){
 		if(!this.ok){
 			break;
@@ -48,9 +61,19 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId){
 		}
 
 		var parent = this;
-		console.log(chalk.green('Launching crawl for'), link);
-		this.get(link, theme, (function(currentLink, parentLinkId){
+		var pb = new ProgressBar('bar-'+)
+		this.get(link, theme, (function(currentLink, parentLinkId, parent, progress){
 			return function(err, res){
+
+				if(parent.waiting[0]){
+					parent.waiting[0].counter--;
+					console.log(chalk.blue(`\tCounter for ${parent.waiting[0].parent} is`), parent.waiting[0].counter);
+
+					if(parent.waiting[0].counter === 0){
+						parent.continue();
+					}
+				}
+
 				if(err){
 					return;
 				}
@@ -108,20 +131,21 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId){
 
 				try{
 					db.save();
-					console.log(chalk.bgBlue("DB SAVED"));
 				} catch(e) {
 					console.error('ERROR saving db:', e);
 				}
 
-				// must be called last for maximum use of real-time
+				parent.app.websockets.broadcast(JSON.stringify(result));
 				if(res.crawl && res.links.length > 0){
-					parent.app.websockets.broadcast(JSON.stringify(result));
-					parent.crawl(res.links, theme, result.node.id);
+					if(firstTime){
+						console.log('First time, launching crawl');
+						return parent.crawl(res.links, theme, result.node.id);
+					} else {
+						return parent.queue(res.links, result.node.id, theme);
+					}
 				}
-
-				return;
 			}
-		})(link, previousLinkId));
+		})(link, previousLinkId, parent));
 	}
 };
 
@@ -170,16 +194,13 @@ Crawler.prototype.get = function(url, theme, callback){
 				href_regex = link_regex.exec(body);
 			}
 
-			
-			// todo : delete same links, but add as reference!!!!
-			console.log('Site has', regex_links.length, 'links');
 			// check links to see if they are different
 			var links = [];
 			principal_url = URL(principal_url);
 
 			for(var l of regex_links){				
 				var link = URL(l);
-				if(link.host === principal_url.host && link.pathname === principal_url.pathname){
+				if(link.hostname === principal_url.hostname && link.pathname === principal_url.pathname){
 					// auto redir
 					// add link in graph ?
 					continue;
@@ -197,8 +218,7 @@ Crawler.prototype.get = function(url, theme, callback){
 				links: links,
 				name: html.title,
 			};
-			callback(null, results);
-			return;
+			return callback(null, results);
 		}
 	})(url));
 };

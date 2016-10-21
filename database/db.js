@@ -1,5 +1,5 @@
 var db = {};
-
+var URL = require('url').parse;
 var fs = require('fs');
 
 Object.defineProperty(Array.prototype, 'findObjectByProperty', {
@@ -56,7 +56,14 @@ db.addEdge = function(from, to, params){
 };
 
 db.findNode = function(link){
-	return db.objects.Nodes.findObjectByProperty('link', link);
+	link = URL(link);
+	for(var node of db.objects.Nodes){
+		var l = URL(node.link);
+		if(l.hostname === link.hostname && l.pathname === link.pathname){
+			return node;
+		}
+	}
+	return null;
 };
 
 db.getNode = function(id){

@@ -14,12 +14,12 @@ var WebSocketServer = require('ws').Server;
 
 var wss = WebSocketServer({server: server});
 wss.on('connection', function(event){
-	console.log('New conenction!');
+	console.log('New connection!');
 });
 wss.broadcast = function(message){
 	wss.clients.forEach(function(ws){
 		ws.send(message);
-	})
+	});
 };
 var ws_app = {
 	websockets : wss,
@@ -63,7 +63,7 @@ app.post('/crawl', function(req, res, err){
 		return res.sendStatus(400);
 	}
 	res.status(200).json({crawling: true});
-	return crawler.crawl(req.body.urls, theme);
+	return crawler.crawl(req.body.urls, theme, null, true);
 });
 
 app.post('/threshold', function(req, res, err){
