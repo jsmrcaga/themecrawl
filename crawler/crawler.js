@@ -27,13 +27,14 @@ Crawler.generateUUID = function generateUUID(){
 };
 
 Crawler.prototype.queue = function(links, fromId, theme){
+	var pb = new ProgressBar(fromId + ' [:bar] :percent', {total: links.length})
 	this.waiting.push({
 		links: links,
 		parent: fromId,
 		counter: links.length,
-		theme: theme
+		theme: theme,
+		progress: pb
 	});
-	console.log(`Queued ${fromId} with ${links.length} nodes`, this.waiting.length);
 };
 
 Crawler.prototype.pop = function(){
@@ -46,11 +47,11 @@ Crawler.prototype.stop = function(){
 
 Crawler.prototype.continue = function(){
 	this.pop();
-	console.log('\tLaunching new crawl for', this.waiting[0].parent);
 	this.crawl(this.waiting[0].links, this.waiting[0].theme, this.waiting[0].parent);
 };	
 
 Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
+	console.log('Crawling', previousLinkId, 'with', links.length, 'nodes');
 	for(var link of links){
 		if(!this.ok){
 			break;
@@ -61,13 +62,12 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 		}
 
 		var parent = this;
-		var pb = new ProgressBar('bar-'+)
 		this.get(link, theme, (function(currentLink, parentLinkId, parent, progress){
 			return function(err, res){
 
 				if(parent.waiting[0]){
 					parent.waiting[0].counter--;
-					console.log(chalk.blue(`\tCounter for ${parent.waiting[0].parent} is`), parent.waiting[0].counter);
+					parent.waiting[0].progress.tick();
 
 					if(parent.waiting[0].counter === 0){
 						parent.continue();
