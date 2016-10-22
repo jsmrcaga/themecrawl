@@ -16,10 +16,18 @@ var wss = WebSocketServer({server: server});
 wss.on('connection', function(event){
 	console.log('New connection!');
 });
+
+var mcounter = 0;
 wss.broadcast = function(message){
 	wss.clients.forEach(function(ws){
-		ws.send(message);
+		ws.send(message, function ack(err){
+			if(err){
+				console.error('WS SEND MESSAGE FAILED', err);
+			}
+		});
 	});
+	mcounter++;
+	console.log('MESSAGES: ', mcounter);
 };
 var ws_app = {
 	websockets : wss,
@@ -63,6 +71,7 @@ app.post('/crawl', function(req, res, err){
 		return res.sendStatus(400);
 	}
 	res.status(200).json({crawling: true});
+	crawler.pool_limit = req.body.max_connections;
 	return crawler.crawl(req.body.urls, theme, null, true);
 });
 
@@ -80,6 +89,6 @@ app.post('/calibrate', function(req, res, err){
 	// given website, based on word frequency
 });
 
-server.listen(1234, function(){
-	console.log(`Server listening! ${process.env.PORT}`);
+server.listen(2217, function(){
+	console.log(`Server listening! ${2217}`);
 });

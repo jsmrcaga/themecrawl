@@ -11,10 +11,11 @@ var chalk = require('chalk');
 
 var URL = require('url').parse;
 
-function Crawler(app){
+function Crawler(app, limit){
 	this.ok = true;
 	this.app = app;
 	this.waiting = [];
+	this.pool_limit = limit;
 };
 var crawler = Crawler;
 
@@ -27,14 +28,14 @@ Crawler.generateUUID = function generateUUID(){
 };
 
 Crawler.prototype.queue = function(links, fromId, theme){
-	var pb = new ProgressBar(fromId + ' [:bar] :percent', {total: links.length})
-	this.waiting.push({
-		links: links,
-		parent: fromId,
-		counter: links.length,
-		theme: theme,
-		progress: pb
-	});
+	for(var l of links){
+		this.waiting.push({
+			link: l,
+			parent: fromId,
+			theme: theme,
+		});
+	}
+	console.log(`Queued ${links.length} nodes, new length is ${this.waiting.length}`);
 };
 
 Crawler.prototype.pop = function(){
@@ -47,34 +48,63 @@ Crawler.prototype.stop = function(){
 
 Crawler.prototype.continue = function(){
 	this.pop();
-	this.crawl(this.waiting[0].links, this.waiting[0].theme, this.waiting[0].parent);
+	if(this.waiting.length === 0){
+		return this.app.websockets.broadcast(JSON.stringify({
+			message: 'END'
+		}));
+	}
+
+	this.crawl(null, this.waiting[0].theme, this.waiting[0].parent);
 };	
 
 Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
-	console.log('Crawling', previousLinkId, 'with', links.length, 'nodes');
-	for(var link of links){
-		if(!this.ok){
+	console.log('New crawl wave');
+	var parent = this;
+
+	if(!this.ok){
+		return;
+	}
+
+	var link_counter = (firstTime) ? links.length : this.pool_limit;
+	var pool = link_counter;
+
+	for(var i = 0 ; i < pool; i++){
+		var link = null;
+		if(firstTime && links[i]){
+			link = {
+				link: links[i]
+			};
+		} else if (firstTime && !links[i]){
 			break;
+		} else {
+			link = parent.waiting[i];
 		}
 
-		if(db.findNode(link)){
+		if(db.findNode(link.link)){
+			link_counter--;
+			console.log('\t\t\tDiminished because already found:', link_counter);
+			if(link_counter === 0){
+				console.log('Calling CONTINUE');
+				parent.continue();
+			}
 			continue;
 		}
 
-		var parent = this;
-		this.get(link, theme, (function(currentLink, parentLinkId, parent, progress){
+		console.log(`\tCrawling ${link.link}`);
+
+		this.get(link.link, theme, (function(currentLink, parentLinkId, parent, progress){
 			return function(err, res){
-
-				if(parent.waiting[0]){
-					parent.waiting[0].counter--;
-					parent.waiting[0].progress.tick();
-
-					if(parent.waiting[0].counter === 0){
-						parent.continue();
-					}
-				}
-
+				link_counter--;
+				console.log('\t\t\tCounter', link_counter);
 				if(err){
+					if(firstTime){
+						this.app.websockets.broadcast(JSON.stringify({
+							error: {
+								message: 'FIRST_HOST_UNREACHABLE',
+								code: 101
+							}
+						}));
+					}
 					return;
 				}
 
@@ -87,12 +117,6 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 						theme: res.theme || false,
 						crawl : res.crawl || false,
 						potential:  res.links.length,
-						borderWidth:7,
-						shape: 'dot',
-						font: {
-							face: 'Oswald',
-							color: '#FFF'
-						}
 					}, 
 					edges: []
 				};
@@ -107,17 +131,41 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 				if(parentLinkId){
 					result.edges.push({
 						from: parentLinkId,
-						to: result.node.id
+						to: result.node.id,
+						weight:1,
+						color: {
+							inherit: 'to'
+						},
+						arrows: {
+							to: {
+								enabled: true
+							}
+						},
+						params: {
+							principal: true
+						}
 					});
 					db.addEdge(parentLinkId, result.node.id);
 				}
 
-				for(var l in res.links){
+				for(var l of res.links){
 					var n = db.findNode(l);
 					if(n){
 						result.edges.push({
 							from: result.node.id,
-							to: n.id
+							to: n.id,
+							weight: 1,
+							color: {
+								inherit: 'to'
+							},
+							arrows: {
+								to: {
+									enabled: true
+								}
+							},
+							params: {
+								principal : false
+							}
 						});
 
 						db.addEdge(result.node.id, n.id);
@@ -136,16 +184,18 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 				}
 
 				parent.app.websockets.broadcast(JSON.stringify(result));
+
 				if(res.crawl && res.links.length > 0){
-					if(firstTime){
-						console.log('First time, launching crawl');
-						return parent.crawl(res.links, theme, result.node.id);
-					} else {
-						return parent.queue(res.links, result.node.id, theme);
-					}
+					parent.queue(res.links, result.node.id, theme);	
 				}
+
+				if(link_counter === 0){
+					console.log('Calling CONTINUE');
+					parent.continue();
+				}
+				return;
 			}
-		})(link, previousLinkId, parent));
+		})(link.link, previousLinkId, parent));
 	}
 };
 
@@ -160,7 +210,7 @@ Crawler.prototype.get = function(url, theme, callback){
 		agent: false,
 		headers:{
 			'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36',
-		}
+		},
 	};
 
 	request(options, (function(principal_url){
