@@ -62,5 +62,24 @@
       [
 	  {"word":"test","weight":0}
       ],"tt":50,"ct":45}
+    },
+    {
+    	"name": "Poliovirus",
+    	"dictionary":{
+			"words": [
+				{"word": "poliovirus", "weight": 10},
+				{"word": "poliomiélite", "weight": 10},
+				{"word": "entérovirus", "weight": 9},
+				{"word": "virus", "weight": 5},
+				{"word": "capside", "weight": 4},
+				{"word": "génome", "weight": 1},
+				{"word": "vaccin", "weight": 3},
+				{"word": "vpo", "weight": 2},
+				{"word": "protéine", "weight":2}, 
+				{"word": "paralysie", "weight": 8}
+			],
+			"tt": 40,
+			"ct": 35
+    	}
     }
 ]

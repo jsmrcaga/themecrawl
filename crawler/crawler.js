@@ -58,6 +58,9 @@ Crawler.prototype.continue = function(){
 };	
 
 Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
+	if(firstTime){
+		this.waiting = [];
+	}
 	console.log('New crawl wave');
 	var parent = this;
 

@@ -25,6 +25,14 @@ init.graph = function initGraph(){
 		console.log('opening', node.link);
 		window.open(node.link);
 	});
+
+	exec.graph.on('click', function(event){
+		if(event.nodes.length > 0){
+			graph.hideNotNeighbors(event.nodes[0]);
+		} else {
+
+		}
+	});
 };
 
 init.start = function initialize(){
@@ -97,6 +105,26 @@ graph.build = function(data){
 	}
 
 	exec.data.edges.add(validated_edges);
+};
+
+graph.hideNotNeighbors = function(id){
+	var nodes_to_hide = exec.data.nodes.get({
+		filter: function(element){
+			return element.from !== id;
+		}
+	});
+
+	var n = [];
+	for(var el of nodes_to_hide){
+		n.push({
+			id: el.id,
+			color: {
+				opacity: 0.2
+			}
+		});
+	}
+
+	exec.data.nodes.update(n);
 };
 
 init.start();
