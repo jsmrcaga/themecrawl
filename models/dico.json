@@ -55,7 +55,7 @@
 	  {"word": "fantasy", "weight":7},
 	  {"word": "MMORPG", "weight":10},
 	  {"word": "Twitch", "weight":10}  
-      ],"tt":50,"ct":45}
+      ],"tt":100,"ct":100}
     },
     {"name":"test","dictionary":
      {"words":
@@ -67,7 +67,7 @@
     	"name": "Poliovirus",
     	"dictionary":{
 			"words": [
-				{"word": "poliovirus", "weight": 10},
+				{"word": "poliovirus", "weight": 100},
 				{"word": "poliomiélite", "weight": 10},
 				{"word": "entérovirus", "weight": 9},
 				{"word": "virus", "weight": 5},
@@ -78,8 +78,8 @@
 				{"word": "protéine", "weight":2}, 
 				{"word": "paralysie", "weight": 8}
 			],
-			"tt": 40,
-			"ct": 35
+			"tt": 0.2,
+			"ct": 0.2
     	}
     }
 ]

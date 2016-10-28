@@ -67,9 +67,9 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 	if(!this.ok){
 		return;
 	}
-
 	var link_counter = (firstTime) ? links.length : this.pool_limit;
 	var pool = link_counter;
+
 
 	for(var i = 0 ; i < pool; i++){
 		var link = null;
@@ -263,7 +263,8 @@ Crawler.prototype.get = function(url, theme, callback){
 			// we do not pass language 
 			// crawler can be in any language
 			var html = unfluff(body);
-			var comp = theme.compare(html.text);
+			
+			var comp = theme.compare(html.text,own_url.href);
 			var results = {
 				theme: comp >= theme.dictionary.tt,
 				crawl: comp >= theme.dictionary.ct,
