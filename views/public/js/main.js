@@ -68,6 +68,21 @@ graph.build = function(data){
 	} else {
 		color = COLORS.not_theme;
 	}
+	if(data.node.score>100)
+	{
+		data.node.size = 100 + ((data.node.score-100)*10)/100; //1 pour 1000 à partir de 100
+	}
+	else if(data.node.score>50)
+	{
+		data.node.size = 50 + ((data.node.score-50)*100)/50; // 1 pour 100 a partir de 50
+	}
+	else if(data.node.score >10)
+	{
+		data.node.size = data.node.score;
+	}
+	else{
+		data.node.size=10;
+	}
 	data.node.borderWidth =7;
 	data.node.shape = 'dot';
 	data.node.font = {
@@ -101,6 +116,10 @@ graph.build = function(data){
 				id: exists_in_db[0].id,
 				weight: exists_in_db[0].weight + 1
 			});
+		}
+		if(!edge.params.theme)
+		{
+			edge.hidden=true;
 		}
 	}
 

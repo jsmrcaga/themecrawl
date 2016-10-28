@@ -110,6 +110,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 					}
 					return;
 				}
+				
 
 				var result = {
 					node: {
@@ -123,7 +124,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 					}, 
 					edges: []
 				};
-
+				console.log("le node a un score de : ",result.node.score);
 				db.addNode(result.node.id, result.node.name, result.node.link, {
 					crawl: result.node.crawl,
 					score: result.node.score,
@@ -145,7 +146,8 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 							}
 						},
 						params: {
-							principal: true
+							principal: true,
+							theme : true
 						}
 					});
 					db.addEdge(parentLinkId, result.node.id);
@@ -154,23 +156,47 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 				for(var l of res.links){
 					var n = db.findNode(l);
 					if(n){
-						result.edges.push({
-							from: result.node.id,
-							to: n.id,
-							weight: 1,
-							color: {
-								inherit: 'to'
-							},
-							arrows: {
-								to: {
-									enabled: true
+						
+						if(!result.node.theme && !n.theme)
+						{
+							result.edges.push({
+								from: result.node.id,
+								to: n.id,
+								weight: 1,
+								color: {
+									inherit: 'to'
+								},
+								arrows: {
+									to: {
+										enabled: true
+									}
+								},
+								params: {
+									principal : false,
+									theme : false
 								}
-							},
-							params: {
-								principal : false
-							}
-						});
-
+							});
+						}
+						else{
+							result.edges.push({
+								from: result.node.id,
+								to: n.id,
+								weight: 1,
+								color: {
+									inherit: 'to'
+								},
+								arrows: {
+									to: {
+										enabled: true
+									}
+								},
+								params: {
+									principal : false,
+									theme : true
+								}
+							});
+						}
+						
 						db.addEdge(result.node.id, n.id);
 					}
 				}
@@ -196,6 +222,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 					console.log('Calling CONTINUE');
 					parent.continue();
 				}
+
 				return;
 			}
 		})(link.link, previousLinkId, parent));

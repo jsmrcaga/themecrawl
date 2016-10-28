@@ -67,7 +67,7 @@
     	"name": "Poliovirus",
     	"dictionary":{
 			"words": [
-				{"word": "poliovirus", "weight": 100},
+				{"word": "poliovirus", "weight": 10},
 				{"word": "poliomiélite", "weight": 10},
 				{"word": "entérovirus", "weight": 9},
 				{"word": "virus", "weight": 5},
@@ -78,8 +78,36 @@
 				{"word": "protéine", "weight":2}, 
 				{"word": "paralysie", "weight": 8}
 			],
-			"tt": 70,
-			"ct": 70
+			"tt": 20,
+			"ct": 20
+    	}
+    },
+    {
+    	"name": "Pince",
+    	"dictionary":{
+			"words": [
+				{"word": "pince", "weight": 10},
+				{"word": "pince-étau", "weight": 10},
+				{"word": "étau", "weight": 10},
+				{"word": "mécanique statique", "weight": 10},
+				{"word": "modélisation", "weight": 10},
+				{"word": "phases", "weight": 8},
+				{"word": "fonctionnement", "weight": 6},
+				{"word": "graphe liaisons", "weight": 7},
+				{"word": "classes équivalences", "weight": 6},
+				{"word": "mors mobile", "weight": 5},
+				{"word": "bati", "weight":5}, 
+				{"word": "vis", "weight": 5},
+				{"word": "mors", "weight": 5},
+				{"word": "mobile", "weight": 5},
+				{"word": "biellette", "weight": 5},
+				{"word": "machoire", "weight": 5},
+				{"word": "manche", "weight": 5},
+				{"word": "coulisseau", "weight": 5},
+				{"word": "poignée", "weight": 5}
+			],
+			"tt": 20,
+			"ct": 20
     	}
     }
 ]
