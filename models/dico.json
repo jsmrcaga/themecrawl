@@ -78,8 +78,8 @@
 				{"word": "protéine", "weight":2}, 
 				{"word": "paralysie", "weight": 8}
 			],
-			"tt": 0.2,
-			"ct": 0.2
+			"tt": 70,
+			"ct": 70
     	}
     }
 ]

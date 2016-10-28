@@ -40,7 +40,6 @@ class Dictionary{
 		*/
 
 		var page_rank = (text.length/5.07)/600;
-		console.log("taille de la page :",length);
 		for(var word of this.words){
 			var reg = new RegExp('\\b'+word.word+'\\b', 'gi');
 			while(reg.test(text)){
