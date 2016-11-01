@@ -86,6 +86,14 @@ graph.build = function(data){
 		color: '#FFF'
 	};
 	exec.data.nodes.add(data.node);
+
+	var crawled_counter = document.querySelector('#crawled_nodes_counter');
+	var theme_counter = document.querySelector('#theme_nodes_counter');
+	crawled_counter.innerHTML = parseInt(crawled_counter.innerHTML) + 1;
+	if(data.node.theme){
+		theme_counter.innerHTML = parseInt(theme_counter.innerHTML) + 1;		
+	}
+
 	exec.data.nodes.update({id: data.node.id, color:{border: color}});
 
 	var validated_edges = [];
@@ -113,8 +121,8 @@ graph.build = function(data){
 				weight: exists_in_db[0].weight + 1
 			});
 		}
-		if(!edge.params.theme)
-		{
+
+		if(!edge.params.theme){
 			edge.hidden=true;
 		}
 	}

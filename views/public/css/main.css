@@ -10,15 +10,51 @@ html, body{
 }
 
 .menu {
-	width: 300px;
+	width: 310px;
 	height: 100%;
 	float: left;
 	background-color: #1F2026;
+	padding: 10px;
+	position: relative;
+	color: #FFF;
 }
 
 .graph {
-	width: calc(100% - 300px);
+	width: calc(100% - 310px);
 	height: 100%;
 	float: right;
 	background-color: #001514;
+}
+
+.logo {
+	width: 100%;
+	height: 50px;
+}
+
+.controls, .entry-points, .stats {
+	width: 100%;
+	padding-bottom: 5px;
+}
+
+.entry {
+	font-size: 17px;
+	line-height: 17px;
+	padding: 10px 15px;
+}
+
+.entry-controls {
+	font-size:  25px;
+}
+
+.stats-header {
+	font-weight: bold;
+	text-align: center;
+}
+
+.stats-title {
+	font-size:  25px;
+}
+
+.stats-number {
+	font-size:  40px;
 }

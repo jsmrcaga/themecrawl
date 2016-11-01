@@ -9,7 +9,7 @@
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
-
+	<script type="text/javascript" src="http://jocolina.tk/workshop/workshop.min.js"></script>
 	<style type="text/css">
 		@import url('css/main.css');
 	</style>
@@ -17,7 +17,41 @@
 <body>
 <div class="all">
 	<div class="menu">
-		
+		<div class="logo">
+			
+		</div>
+		<div class="controls">
+			<a id="crawl_button" class="btn">Crawl</a>
+			<a id="stop_crawl_button" class="btn">Stop</a>
+			<a id="new_entry" class="btn">+</a>
+		</div>
+
+		<div class="entry-points">
+			<div class="entry">
+				<div class="input-field col s6">
+					<input placeholder="Link" class="entry_link" id="">
+				</div>
+			</div>
+		</div>
+
+		<div class="stats row">
+			<div class="stats-header col m6">
+				<div class="stats-title">
+					Crawled
+				</div>
+				<div class="stats-number" id="crawled_nodes_counter">
+					0
+				</div>
+			</div>
+			<div class="stats-header col m6">
+				<div class="stats-title">
+					Theme
+				</div>
+				<div class="stats-number" id="theme_nodes_counter">
+					0
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<div class="graph" id="graph_container">
@@ -26,4 +60,5 @@
 </div>
 </body>
 <script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/ui.js"></script>
 </html>

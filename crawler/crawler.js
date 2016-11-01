@@ -70,7 +70,6 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 	var link_counter = (firstTime) ? links.length : this.pool_limit;
 	var pool = link_counter;
 
-
 	for(var i = 0 ; i < pool; i++){
 		var link = null;
 		if(firstTime && links[i]){
@@ -115,7 +114,6 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 					return;
 				}
 				
-
 				var result = {
 					node: {
 						id: Crawler.generateUUID(),
@@ -142,7 +140,6 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 					result.edges.push({
 						from: parentLinkId,
 						to: result.node.id,
-						weight:1,
 						color: {
 							inherit: 'to'
 						},
@@ -162,46 +159,22 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 				for(var l of res.links){
 					var n = db.findNode(l);
 					if(n){
-						
-						if(!result.node.theme && !n.theme)
-						{
-							result.edges.push({
-								from: result.node.id,
-								to: n.id,
-								weight: 1,
-								color: {
-									inherit: 'to'
-								},
-								arrows: {
-									to: {
-										enabled: true
-									}
-								},
-								params: {
-									principal : false,
-									theme : false
+						result.edges.push({
+							from: result.node.id,
+							to: n.id,
+							color: {
+								inherit: 'to'
+							},
+							arrows: {
+								to: {
+									enabled: true
 								}
-							});
-						}
-						else{
-							result.edges.push({
-								from: result.node.id,
-								to: n.id,
-								weight: 1,
-								color: {
-									inherit: 'to'
-								},
-								arrows: {
-									to: {
-										enabled: true
-									}
-								},
-								params: {
-									principal : false,
-									theme : true
-								}
-							});
-						}
+							},
+							params: {
+								principal : false,
+								theme : (!result.node.theme && !n.theme) ? false : true,
+							}
+						});
 						
 						db.addEdge(result.node.id, n.id);
 					}
