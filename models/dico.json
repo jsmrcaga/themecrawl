@@ -137,6 +137,34 @@
 			],
 			"tt": 20,
 			"ct": 20
+		}
+    },
+    {
+    	"name": "Data-mining",
+    	"dictionary":{
+			"words": [
+				{"word": "machine", "weight": 10},
+				{"word": "learning", "weight": 10},
+				{"word": "Data-mining", "weight": 10},
+				{"word": "mining", "weight": 10},
+				{"word": "warehouse", "weight": 10},
+				{"word": "r", "weight": 8},
+				{"word": "code", "weight": 6},
+				{"word": "BI", "weight": 7},
+				{"word": "bayes", "weight": 6},
+				{"word": "classification", "weight": 5},
+				{"word": "classifieur", "weight":5}, 
+				{"word": "classement", "weight": 5},
+				{"word": "regression", "weight": 5},
+				{"word": "logistique", "weight": 5},
+				{"word": "discriminante", "weight": 5},
+				{"word": "analyse", "weight": 5},
+				{"word": "big-data", "weight": 5},
+				{"word": "données", "weight": 5},
+				{"word": "donnée", "weight": 5}
+			],
+			"tt": 20,
+			"ct": 20
     	}
     }
 ]
