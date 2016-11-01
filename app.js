@@ -65,6 +65,11 @@ app.get('/stop', function(req, res, err){
 	return res.status(200).json({action: 'waiting_for_stop'});
 });
 
+app.get('/themes', function(req, res, err){
+	var t = ThemeManager.getThemesIds();
+	return res.json(t);
+});
+
 app.post('/crawl', function(req, res, err){
 	var theme = ThemeManager.loadTheme(req.body.theme);
 	if(!theme){

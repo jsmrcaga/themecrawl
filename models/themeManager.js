@@ -31,6 +31,14 @@ ThemeManager.loadThemes = function(){
 
 };
 
+ThemeManager.getThemesIds = function(){
+	var t = [];
+	for(var theme of ThemeManager.themes){
+		t.push(theme.name);
+	}
+	return t;
+};
+
 ThemeManager.loadTheme = function(id){
 
 	for(var i=0;i<ThemeManager.themes.length;i++)

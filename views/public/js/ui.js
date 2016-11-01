@@ -23,7 +23,7 @@
 			method: 'POST',
 			data: {
 				urls: entry_links,
-				theme: 'Poliovirus',
+				theme: document.querySelector('#theme_selector').value,
 				max_connections: 10
 			},
 			rh: {
@@ -58,4 +58,32 @@
 
 		document.querySelector('.entry-points').appendChild(div);
 	});
+
+	function initSelector(){
+		var selector = document.querySelector('#theme_selector');
+		selector.innerHTML = '';
+
+		Workshop.ajax({
+			url: 'http://' + location.host + '/themes',
+			method: 'GET'
+		}, function(err, res){
+			try{
+				res = JSON.parse(res);
+			} catch(e) {
+				console.error(e);
+			}
+
+			for(var t of res){
+				var option = document.createElement('option');
+				option.value = t;
+				option.innerHTML = t;
+				console.log(option);
+				selector.appendChild(option);
+			}
+			
+			$('select').material_select();
+		});
+	}
+
+	initSelector();
 })();
