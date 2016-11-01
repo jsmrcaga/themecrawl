@@ -142,7 +142,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 					result.edges.push({
 						from: parentLinkId,
 						to: result.node.id,
-						weight:1,
+						width:4,
 						color: {
 							inherit: 'to'
 						},
@@ -168,7 +168,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 							result.edges.push({
 								from: result.node.id,
 								to: n.id,
-								weight: 1,
+								width: 1,
 								color: {
 									inherit: 'to'
 								},
@@ -187,7 +187,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 							result.edges.push({
 								from: result.node.id,
 								to: n.id,
-								weight: 1,
+								width: 1,
 								color: {
 									inherit: 'to'
 								},
