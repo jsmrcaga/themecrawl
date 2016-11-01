@@ -120,6 +120,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 						score: res.score,
 						theme: res.theme || false,
 						crawl : res.crawl || false,
+						ct : theme.dictionary.ct,
 						potential:  res.links.length,
 					}, 
 					edges: []

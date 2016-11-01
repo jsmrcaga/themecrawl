@@ -83,6 +83,35 @@
     	}
     },
     {
+    	"name": "Aperitif",
+    	"dictionary":{
+			"words": [
+				{"word": "aperitif", "weight": 10},
+				{"word": "pastis", "weight": 10},
+				{"word": "martini", "weight": 7},
+				{"word": "whisky", "weight": 7},
+				{"word": "biere", "weight": 7},
+				{"word": "cacahuete", "weight": 5},
+				{"word": "cacahuetes", "weight": 5},
+				{"word": "rosé", "weight": 7},
+				{"word": "vin", "weight": 7},
+				{"word": "vodka", "weight":6}, 
+				{"word": "mojito", "weight": 7},
+				{"word": "amis", "weight": 3},
+				{"word": "saucisson", "weight": 7},
+				{"word": "alcool", "weight": 7},
+				{"word": "punch", "weight": 7},
+				{"word": "shot", "weight": 7},
+				{"word": "shooter", "weight": 7},
+				{"word": "bar", "weight": 5},
+				{"word": "soirée", "weight": 5},
+				{"word": "rhum", "weight": 6}
+			],
+			"tt": 20,
+			"ct": 20
+    	}
+    },
+    {
     	"name": "Pince",
     	"dictionary":{
 			"words": [
