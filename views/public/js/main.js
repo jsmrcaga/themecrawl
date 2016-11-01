@@ -50,6 +50,10 @@ init.start = function initialize(){
 			return console.error(message, e);
 		}
 
+		if(message.message && message.message === 'END'){
+			alert('Fin du crawl');
+		}
+
 		graph.build(message);
 	});
 
@@ -68,21 +72,13 @@ graph.build = function(data){
 	} else {
 		color = COLORS.not_theme;
 	}
-	if(data.node.score>(data.node.ct+80))
-	{
-		data.node.size = (data.node.ct+80) + ((data.node.score-(data.node.ct+80))*10)/(data.node.ct+80); //1 pour 1000 à partir de 100
-	}
-	else if(data.node.score>(data.node.ct+30))
-	{
-		data.node.size = data.node.ct+30 + ((data.node.score-(data.node.ct+30))*100)/(data.node.ct+30); // 1 pour 100 a partir de 50
-	}
-	else if(data.node.score >data.node.ct)
-	{
-		data.node.size = data.node.score;
-	}
-	else{
+
+	if(data.node.score > data.node.tt){
+		data.node.size = Math.log(data.node.score);
+	} else {
 		data.node.size=(data.node.ct/2);
 	}
+
 	data.node.borderWidth =7;
 	data.node.shape = 'dot';
 	data.node.font = {

@@ -83,6 +83,10 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 			link = parent.waiting[i];
 		}
 
+		if(!link.link){
+			continue;
+		}
+
 		if(db.findNode(link.link)){
 			link_counter--;
 			console.log('\t\t\tDiminished because already found:', link_counter);
@@ -121,6 +125,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 						theme: res.theme || false,
 						crawl : res.crawl || false,
 						ct : theme.dictionary.ct,
+						tt: theme.dictionary.tt,
 						potential:  res.links.length,
 					}, 
 					edges: []
