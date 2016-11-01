@@ -55,7 +55,7 @@
 	  {"word": "fantasy", "weight":7},
 	  {"word": "MMORPG", "weight":10},
 	  {"word": "Twitch", "weight":10}  
-      ],"tt":100,"ct":100}
+      ],"tt":20,"ct":20}
     },
     {"name":"test","dictionary":
      {"words":

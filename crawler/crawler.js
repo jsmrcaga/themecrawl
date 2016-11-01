@@ -140,6 +140,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 					result.edges.push({
 						from: parentLinkId,
 						to: result.node.id,
+						width:4,
 						color: {
 							inherit: 'to'
 						},

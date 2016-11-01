@@ -74,7 +74,7 @@ graph.build = function(data){
 	}
 
 	if(data.node.score > data.node.tt){
-		data.node.size = Math.log(data.node.score);
+		data.node.size =data.node.tt + Math.log(data.node.score-data.node.tt);
 	} else {
 		data.node.size=(data.node.ct/2);
 	}
