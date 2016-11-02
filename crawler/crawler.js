@@ -46,6 +46,11 @@ Crawler.prototype.stop = function(){
 	this.ok = false;
 };
 
+Crawler.prototype.play = function(){
+	this.ok = true;
+	this.continue();
+};
+
 Crawler.prototype.continue = function(){
 	this.pop();
 	if(this.waiting.length === 0){
