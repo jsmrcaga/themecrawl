@@ -18,12 +18,20 @@
 
 	document.querySelector('#crawl_button').addEventListener('click', function(){
 		var entry_links = getEntryPoints();
+		if(document.querySelector("#threshold_theme").value==''){
+			document.querySelector("#threshold_theme").value=0;
+		}
+		if(document.querySelector("#threshold_crawler").value==''){
+			document.querySelector("#threshold_crawler").value=0;
+		}
 		Workshop.ajax({
 			url: 'http://' + location.host + '/crawl',
 			method: 'POST',
 			data: {
 				urls: entry_links,
 				theme: document.querySelector('#theme_selector').value,
+				tt : document.querySelector("#threshold_theme").value,
+				ct : document.querySelector("#threshold_crawler").value,
 				max_connections: 10
 			},
 			rh: {
@@ -59,6 +67,30 @@
 		document.querySelector('.entry-points').appendChild(div);
 	});
 
+	document.querySelector('#theme_selector').addEventListener('change', function(){
+		console.log(document.querySelector('#theme_selector').value);
+		Workshop.ajax({
+			url:'http://' +location.host + '/threshold',
+			method:'POST',
+			data : {
+				theme : document.querySelector('#theme_selector').value
+			},
+			rh: {
+				'Content-Type': 'application/json'
+			}
+		}, function(err, res){
+			try{
+				res = JSON.parse(res);
+				console.log(res);
+				document.querySelector('#threshold_theme').value=res.dictionary.tt;
+				document.querySelector('#threshold_crawler').value=res.dictionary.ct;
+
+			} catch(e) {
+				console.error(e);
+			}
+			});
+	});
+
 	function initSelector(){
 		var selector = document.querySelector('#theme_selector');
 		selector.innerHTML = '';
@@ -81,7 +113,7 @@
 				selector.appendChild(option);
 			}
 			
-			$('select').material_select();
+			//$('select').material_select();
 		});
 	}
 

@@ -69,6 +69,10 @@ app.get('/themes', function(req, res, err){
 	var t = ThemeManager.getThemesIds();
 	return res.json(t);
 });
+app.post('/threshold', function(req, res, err){
+	var t = ThemeManager.loadTheme(req.body.theme);
+	return res.json(t);
+});
 
 app.post('/crawl', function(req, res, err){
 	var theme = ThemeManager.loadTheme(req.body.theme);

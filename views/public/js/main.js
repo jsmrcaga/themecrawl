@@ -91,6 +91,7 @@ graph.build = function(data){
 		face: 'Oswald',
 		color: '#FFF'
 	};
+	data.node.title= "score : "+data.node.score;
 	exec.data.nodes.add(data.node);
 
 	var crawled_counter = document.querySelector('#crawled_nodes_counter');
@@ -155,5 +156,7 @@ graph.hideNotNeighbors = function(id){
 
 	exec.data.nodes.update(n);
 };
+
+
 
 init.start();

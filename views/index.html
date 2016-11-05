@@ -28,15 +28,28 @@
 
 		<div class="entry-points">
 			<div class="input-field col s12">
-				<select id="theme_selector">
+				<select id="theme_selector" class="browser-default">
 					
 				</select>
+				
 			</div>
+			<div class="input field row">
+				<div class="input-field col s6">
+				    <input value="0" id="threshold_crawler" type="text" class="validate">
+				    <label class="active" for="threshold_crawler">Crawler threshold</label>
+			    </div>
+				<div class="input-field col s6">
+			      <input value="0" id="threshold_theme" type="text" class="validate">
+			      <label class="active" for="threshold_theme">Theme threshold</label>
+				</div>
+			</div>
+
 			<div class="entry">
 				<div class="input-field col s6">
 					<input placeholder="Link" class="entry_link" id="">
 				</div>
 			</div>
+			
 		</div>
 
 		<div class="stats row">
