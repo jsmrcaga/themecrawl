@@ -79,6 +79,11 @@ app.post('/crawl', function(req, res, err){
 	if(!theme){
 		return res.sendStatus(400);
 	}
+
+	theme.dictionary.ct = req.body.ct;
+	theme.dictionary.tt = req.body.tt;
+
+	console.log(`Begin crawling ${theme.name} with thresholds`, theme.dictionary.tt, theme.dictionary.ct);
 	res.status(200).json({crawling: true});
 	crawler.pool_limit = req.body.max_connections;
 	return crawler.crawl(req.body.urls, theme, null, true);
