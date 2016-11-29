@@ -36,6 +36,9 @@ var ws_app = {
 var Crawler = require('./crawler/crawler.js');
 var crawler = new Crawler(ws_app);
 
+var themator = require('./crawler/themator.js');
+
+
 var bodyParser = require('body-parser');
 var cors = require('cors');
 app.use(cors());
@@ -99,6 +102,18 @@ app.post('/calibrate', function(req, res, err){
 	// takes a list of words weighted 1, and 
 	// calibrates the weights according to a
 	// given website, based on word frequency
+});
+
+app.post('/make', function(req, res, err){
+
+  
+  return themator.get(req.body.url, function(theme){
+    if (theme) {
+      res.status(200).json({created: true});
+    } else {
+      res.status(200).json({created: false});
+    };
+  });
 });
 
 server.listen(2217, function(){
