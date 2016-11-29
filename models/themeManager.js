@@ -66,6 +66,20 @@ ThemeManager.newTheme = function(name, dict, tt, ct){
 	return t;
 };
 
+ThemeManager.setThreshold = function(id,tt,ct){
+
+	for(var i=0;i<ThemeManager.themes.length;i++)
+	{
+		if(ThemeManager.themes[i].name===id)
+		{
+			ThemeManager.themes[i].dictionary.ct = parseInt(ct);
+			ThemeManager.themes[i].dictionary.tt = parseInt(tt);
+		}
+	
+	}
+	fs.writeFileSync(__dirname + '/dico.json', JSON.stringify(ThemeManager.themes));
+}
+
 
 
 module.exports = ThemeManager;

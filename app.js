@@ -80,9 +80,7 @@ app.post('/crawl', function(req, res, err){
 		return res.sendStatus(400);
 	}
 
-	//theme.dictionary.ct = req.body.ct;
-	//theme.dictionary.tt = req.body.tt;
-
+	ThemeManager.setThreshold(theme.name,req.body.tt,req.body.ct);
 	console.log(`Begin crawling ${theme.name} with thresholds`, theme.dictionary.tt, theme.dictionary.ct);
 	res.status(200).json({crawling: true});
 	crawler.pool_limit = req.body.max_connections;
