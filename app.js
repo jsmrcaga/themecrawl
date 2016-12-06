@@ -13,8 +13,20 @@ var server = http.createServer(app);
 var WebSocketServer = require('ws').Server;
 
 var wss = WebSocketServer({server: server});
-wss.on('connection', function(event){
-	console.log('New connection!');
+wss.on('connection', function(ws){
+	if(!ws.upgradeReq.headers.cookie){
+		ws.send(JSON.stringify({error:{code: 403}}));
+		ws.close();
+	}
+
+	var [t, token] = ws.upgradeReq.headers.cookie.split('=');
+	var crawler = CrawlerManager.getCrawler(token);
+	if(!crawler){
+		ws.send(JSON.stringify({error:{code: 404}}));
+		ws.close();
+	} else {
+		crawler.crawler.websocket = ws;
+	}
 });
 
 var mcounter = 0;
@@ -27,14 +39,16 @@ wss.broadcast = function(message){
 		});
 	});
 	mcounter++;
-	console.log('MESSAGES: ', mcounter);
 };
 var ws_app = {
 	websockets : wss,
 };
 
 var Crawler = require('./crawler/crawler.js');
-var crawler = new Crawler(ws_app);
+var CrawlerManager = require('./crawler/CrawlerManager.js');
+
+var themator = require('./crawler/themator.js');
+
 
 var bodyParser = require('body-parser');
 var cors = require('cors');
@@ -51,9 +65,24 @@ app.set('view engine', 'html');
 app.set('views', __dirname+'/views');
 app.use(express.static(__dirname+'/views/public'));
 
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+app.use('/', function(req, res, next){
+	if(req.path === '/'){
+		return next();
+	}
+	if(!req.cookies.token){
+		return res.status(400).json({error:{message: 'Cookie required'}});
+	}
+	return next();
+})
 
 app.get('/', function (req, res, err){
-	res.render('index');
+	var crawler = new Crawler();
+	var token = Crawler.generateUUID();
+	CrawlerManager.addCrawler(crawler, token)
+	res.cookie('token', token).render('index');
 });
 
 app.post('/theme', function(req, res, err){
@@ -61,7 +90,12 @@ app.post('/theme', function(req, res, err){
 });
 
 app.get('/stop', function(req, res, err){
-	crawler.stop();
+	var crawler = CrawlerManager.getCrawler(req.cookies.token);
+	if(!crawler){
+		return res.sendStatus(404);
+	} else {
+		crawler.crawler.stop();
+	}
 	return res.status(200).json({action: 'waiting_for_stop'});
 });
 
@@ -79,13 +113,21 @@ app.post('/crawl', function(req, res, err){
 	if(!theme){
 		return res.sendStatus(400);
 	}
+	var crawler = CrawlerManager.getCrawler(req.cookies.token);
+	if(!crawler){
+		return res.sendStatus(404);
+	} else {
+		crawler = crawler.crawler;
+	}
 
-	// theme.dictionary.ct = req.body.ct;
-	// theme.dictionary.tt = req.body.tt;
-
+	if(crawler.init){
+		res.status(200).json({crawling: true});
+		return crawler.play();
+	}
+	// ThemeManager.setThreshold(theme.name,req.body.tt,req.body.ct);
 	console.log(`Begin crawling ${theme.name} with thresholds`, theme.dictionary.tt, theme.dictionary.ct);
-	res.status(200).json({crawling: true});
 	crawler.pool_limit = req.body.max_connections;
+	res.status(200).json({crawling: true});
 	return crawler.crawl(req.body.urls, theme, null, true);
 });
 
@@ -101,6 +143,18 @@ app.post('/calibrate', function(req, res, err){
 	// takes a list of words weighted 1, and 
 	// calibrates the weights according to a
 	// given website, based on word frequency
+});
+
+app.post('/make', function(req, res, err){
+
+  
+  return themator.get(req.body.url, function(theme){
+    if (theme) {
+      res.status(200).json({created: true});
+    } else {
+      res.status(200).json({created: false});
+    };
+  });
 });
 
 server.listen(2217, function(){

@@ -1,5 +1,4 @@
 var request = require('request');
-var cheerio = require('cheerio');
 var unfluff = require('unfluff');
 var ProgressBar = require('progress');
 
@@ -11,12 +10,14 @@ var chalk = require('chalk');
 
 var URL = require('url').parse;
 
-function Crawler(app, limit){
+function Crawler(limit){
 	this.ok = true;
-	this.app = app;
+	this.init = false;
+	this.websocket = null;
 	this.waiting = [];
 	this.pool_limit = limit;
 	this.current_index = 0;
+	this.id = Crawler.generateUUID()
 };
 var crawler = Crawler;
 
@@ -30,21 +31,21 @@ Crawler.generateUUID = function generateUUID(){
 
 Crawler.prototype.queue = function(links, fromId, theme){
 	for(var i = 0; i < links.length; i++){
-		if(i >= 10){
-			break;
-		}
+		// if(i >= 10){
+		// 	break;
+		// }
 		var l = links[i];
-		// this.waiting.push({
-		// 	link: l,
-		// 	parent: fromId,
-		// 	theme: theme,
-		// });
-		this.waiting.splice(this.current_index, 0, {
+		this.waiting.push({
 			link: l,
 			parent: fromId,
 			theme: theme,
 		});
-		this.current_index += 10;
+		// this.waiting.splice(this.current_index, 0, {
+		// 	link: l,
+		// 	parent: fromId,
+		// 	theme: theme,
+		// });
+		// this.current_index += 10;
 	}
 	console.log(`Queued ${links.length} nodes, new length is ${this.waiting.length}`);
 };
@@ -65,9 +66,12 @@ Crawler.prototype.play = function(){
 Crawler.prototype.continue = function(){
 	this.pop();
 	if(this.waiting.length === 0){
-		return this.app.websockets.broadcast(JSON.stringify({
-			message: 'END'
-		}));
+		if(this.websocket){
+			return this.websocket.send(JSON.stringify({
+				message: 'END'
+			}));
+		}
+		return null;
 	}
 
 	this.crawl(null, this.waiting[0].theme, this.waiting[0].parent);
@@ -85,10 +89,11 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 	}
 	var link_counter = (firstTime) ? (links.length < this.pool_limit ? links.length : this.pool_limit) : this.pool_limit;
 	var pool = link_counter;
-
+	console.log('Pool', pool);
 	for(var i = 0 ; i < pool; i++){
 		var link = null;
 		if(firstTime && links[i]){
+			parent.init = true;
 			link = {
 				link: links[i]
 			};
@@ -120,12 +125,14 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 				console.log('\t\t\tCounter', link_counter);
 				if(err){
 					if(firstTime){
-						this.app.websockets.broadcast(JSON.stringify({
-							error: {
-								message: 'FIRST_HOST_UNREACHABLE',
-								code: 101
-							}
-						}));
+						if(this.websocket){
+							this.websocket.send(JSON.stringify({
+								error: {
+									message: 'FIRST_HOST_UNREACHABLE',
+									code: 101
+								}
+							}));
+						}
 					}
 					return;
 				}
@@ -208,7 +215,9 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 					console.error('ERROR saving db:', e);
 				}
 
-				parent.app.websockets.broadcast(JSON.stringify(result));
+				if(parent.websocket){
+					parent.websocket.send(JSON.stringify(result));
+				}
 
 				if(res.crawl && res.links.length > 0){
 					parent.queue(res.links, result.node.id, theme);	
