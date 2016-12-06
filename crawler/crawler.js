@@ -16,6 +16,7 @@ function Crawler(app, limit){
 	this.app = app;
 	this.waiting = [];
 	this.pool_limit = limit;
+	this.current_index = 0;
 };
 var crawler = Crawler;
 
@@ -28,12 +29,22 @@ Crawler.generateUUID = function generateUUID(){
 };
 
 Crawler.prototype.queue = function(links, fromId, theme){
-	for(var l of links){
-		this.waiting.push({
+	for(var i = 0; i < links.length; i++){
+		if(i >= 10){
+			break;
+		}
+		var l = links[i];
+		// this.waiting.push({
+		// 	link: l,
+		// 	parent: fromId,
+		// 	theme: theme,
+		// });
+		this.waiting.splice(this.current_index, 0, {
 			link: l,
 			parent: fromId,
 			theme: theme,
 		});
+		this.current_index += 10;
 	}
 	console.log(`Queued ${links.length} nodes, new length is ${this.waiting.length}`);
 };
@@ -72,7 +83,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 	if(!this.ok){
 		return;
 	}
-	var link_counter = (firstTime) ? links.length : this.pool_limit;
+	var link_counter = (firstTime) ? (links.length < this.pool_limit ? links.length : this.pool_limit) : this.pool_limit;
 	var pool = link_counter;
 
 	for(var i = 0 ; i < pool; i++){

@@ -28,7 +28,6 @@ ThemeManager.loadThemes = function(){
 	} catch(e) {
 		console.error('Erreur chargement json', e);
 	}
-
 };
 
 ThemeManager.getThemesIds = function(){
