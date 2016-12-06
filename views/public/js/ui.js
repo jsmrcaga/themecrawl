@@ -51,11 +51,12 @@
 		});
 	});
 
-	document.querySelector('#rest_button').addEventListener('click',function(){
+	document.querySelector('#reset_button').addEventListener('click',function(){
 		Workshop.ajax({
 			url: 'http://' + location.host + '/reset',
 			method: 'GET',
-		}, function(err, res){
+		}, function(err, res,xhr){
+			
 			console.log(res);
 		});
 	})

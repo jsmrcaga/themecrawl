@@ -53,6 +53,9 @@ init.start = function initialize(){
 		if(message.message && message.message === 'END'){
 			alert('Fin du crawl');
 		}
+		if(message.end_success && message.end_success==true){
+			graph.clear();
+		}
 
 		graph.build(message);
 	});
@@ -138,6 +141,8 @@ graph.build = function(data){
 };
 
 graph.clear = function(){
+	exec.data.nodes.clear();
+	exec.data.edges.clear();
 
 };
 

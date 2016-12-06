@@ -145,6 +145,29 @@ app.post('/calibrate', function(req, res, err){
 	// given website, based on word frequency
 });
 
+
+app.get('/reset',function(req,res,err){
+	//stop the crawler first
+	token = req.cookies.token;
+	crawler = CrawlerManager.getCrawler(token);
+	if(crawler!=null){
+		crawler.crawler.stop_callback = function(){
+			crawler.crawler.websocket.send(JSON.stringify({end_success : true}));
+			crawler.crawler.waiting=[];
+		};
+		crawler.crawler.stop();
+		res.sendStatus(200);
+	}
+	else {
+		res.sendStatus(404);
+	}
+
+	//
+	
+
+
+});
+
 app.post('/make', function(req, res, err){
 
   
