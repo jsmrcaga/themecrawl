@@ -137,6 +137,10 @@ graph.build = function(data){
 	exec.data.edges.add(validated_edges);
 };
 
+graph.clear = function(){
+
+};
+
 graph.hideNotNeighbors = function(id){
 	var nodes_to_hide = exec.data.nodes.get({
 		filter: function(element){
