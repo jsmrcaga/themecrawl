@@ -56,8 +56,10 @@
 			url: 'http://' + location.host + '/reset',
 			method: 'GET',
 		}, function(err, res,xhr){
-			
+
 			console.log(res);
+			document.querySelector('#crawled_nodes_counter').innerHTML = 0;
+			document.querySelector('#theme_nodes_counter').innerHTML = 0;
 		});
 	})
 

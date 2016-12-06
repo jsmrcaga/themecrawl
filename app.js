@@ -154,6 +154,8 @@ app.get('/reset',function(req,res,err){
 		crawler.crawler.stop_callback = function(){
 			crawler.crawler.websocket.send(JSON.stringify({end_success : true}));
 			crawler.crawler.waiting=[];
+			crawler.crawler.ok=true;
+			crawler.crawler.init=false;
 		};
 		crawler.crawler.stop();
 		res.sendStatus(200);

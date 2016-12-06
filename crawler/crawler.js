@@ -87,6 +87,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 
 	if(!this.ok){
 		if(this.stop_callback){
+			console.log("coucou");
 			this.stop_callback();
 		}
 		return;
