@@ -17,7 +17,8 @@ function Crawler(limit){
 	this.waiting = [];
 	this.pool_limit = limit;
 	this.current_index = 0;
-	this.id = Crawler.generateUUID()
+	this.id = Crawler.generateUUID();
+	this.stop_callback = null;
 };
 var crawler = Crawler;
 
@@ -85,6 +86,9 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 	var parent = this;
 
 	if(!this.ok){
+		if(this.stop_callback){
+			this.stop_callback();
+		}
 		return;
 	}
 	var link_counter = (firstTime) ? (links.length < this.pool_limit ? links.length : this.pool_limit) : this.pool_limit;
