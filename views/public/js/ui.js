@@ -51,6 +51,16 @@
 		});
 	});
 
+	document.querySelector('#reset_button').addEventListener('click',function(){
+		Workshop.ajax({
+			url: 'http://' + location.host + '/reset',
+			method: 'GET',
+		}, function(err, res,xhr){
+			
+			console.log(res);
+		});
+	})
+
 	document.querySelector('#new_entry').addEventListener('click', function(){
 		var div = document.createElement('div');
 		div.classList.add('entry');
