@@ -48,6 +48,7 @@
 			method: 'GET',
 		}, function(err, res){
 			console.log(res);
+			document.querySelector('#crawl_button').innerHTML = 'Resume';
 		});
 	});
 
@@ -58,8 +59,6 @@
 		}, function(err, res,xhr){
 
 			console.log(res);
-			document.querySelector('#crawled_nodes_counter').innerHTML = 0;
-			document.querySelector('#theme_nodes_counter').innerHTML = 0;
 		});
 	})
 

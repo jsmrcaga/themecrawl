@@ -122,6 +122,7 @@ app.post('/crawl', function(req, res, err){
 
 	if(crawler.init){
 		res.status(200).json({crawling: true});
+		console.log('Resuming Crawl');
 		return crawler.play();
 	}
 	// ThemeManager.setThreshold(theme.name,req.body.tt,req.body.ct);
@@ -152,11 +153,17 @@ app.get('/reset',function(req,res,err){
 	crawler = CrawlerManager.getCrawler(token);
 	if(crawler!=null){
 		crawler.crawler.stop_callback = function(){
+			crawler.crawler.clear();
 			crawler.crawler.websocket.send(JSON.stringify({end_success : true}));
 			crawler.crawler.waiting=[];
-			crawler.crawler.ok=true;
-			crawler.crawler.init=false;
+			crawler.crawler.ok = true;
+			crawler.crawler.init = false;
+			crawler.crawler.stop_callback = null;
 		};
+		if(!crawler.crawler.ok){
+			crawler.crawler.stop_callback();
+			return res.sendStatus(200);
+		}
 		crawler.crawler.stop();
 		res.sendStatus(200);
 	}

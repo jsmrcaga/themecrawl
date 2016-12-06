@@ -1,6 +1,13 @@
-var db = {};
 var URL = require('url').parse;
 var fs = require('fs');
+
+function generateUUID(){
+	function s4(){
+		return Math.floor((1+Math.random()) * 0x10000).toString(16).substring(1);
+	}
+
+	return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
+};
 
 Object.defineProperty(Array.prototype, 'findObjectByProperty', {
 	value: function(prop, val){
@@ -36,28 +43,33 @@ class Edge{
 	}
 }
 
-db.objects = {
-	Nodes: [],
-	Edges: []
+class DataBase{
+	constructor(){
+		this.objects = {
+			Nodes: [],
+			Edges: []
+		};
+		this.id = generateUUID();
+	}
+}
+
+DataBase.prototype.addNode = function(id, name, link, extra){
+	this.objects.Nodes.push(new Node(id, name, link, extra));
 };
 
-db.addNode = function(id, name, link, extra){
-	db.objects.Nodes.push(new Node(id, name, link, extra));
-};
-
-db.addEdge = function(from, to, params){
-	var f = db.objects.Nodes.findObjectByProperty('id', from);
-	var t = db.objects.Nodes.findObjectByProperty('id', to);
+DataBase.prototype.addEdge = function(from, to, params){
+	var f = this.objects.Nodes.findObjectByProperty('id', from);
+	var t = this.objects.Nodes.findObjectByProperty('id', to);
 	if(t && f){
-		db.objects.Edges.push(new Edge(from, to, params));
+		this.objects.Edges.push(new Edge(from, to, params));
 	} else {
 		throw new Error('Node does not exist', from, to);
 	}
 };
 
-db.findNode = function(link){
+DataBase.prototype.findNode = function(link){
 	link = URL(link);
-	for(var node of db.objects.Nodes){
+	for(var node of this.objects.Nodes){
 		var l = URL(node.link);
 		if(l.hostname === link.hostname && l.pathname === link.pathname){
 			return node;
@@ -66,22 +78,29 @@ db.findNode = function(link){
 	return null;
 };
 
-db.getNode = function(id){
-	return db.objects.Nodes.findObjectByProperty('id', id);
+DataBase.prototype.getNode = function(id){
+	return this.objects.Nodes.findObjectByProperty('id', id);
 };
 
-db.save = function(){
-	fs.writeFileSync('./nodes.json', JSON.stringify(db.objects));
+DataBase.prototype.save = function(){
+	fs.writeFileSync('./nodes.json', JSON.stringify(this.objects));
 };
 
-db.load = function(){
+DataBase.prototype.load = function(){
 	try{
-		db.objects = JSON.parse(fs.readFileSync('./nodes.json'));
+		this.objects = JSON.parse(fs.readFileSync('./nodes.json'));
 	} catch(e) {
 		console.error(e);
 		throw e;
 	}
 };
 
+DataBase.prototype.clear = function(){
+	this.objects = {
+		Nodes: [],
+		Edges: []
+	};
+};
 
-module.exports = db;
+
+module.exports = DataBase;

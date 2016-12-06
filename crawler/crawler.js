@@ -19,6 +19,7 @@ function Crawler(limit){
 	this.current_index = 0;
 	this.id = Crawler.generateUUID();
 	this.stop_callback = null;
+	this.db = new db();
 };
 var crawler = Crawler;
 
@@ -28,6 +29,10 @@ Crawler.generateUUID = function generateUUID(){
 	}
 
 	return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
+};
+
+Crawler.prototype.clear = function(){
+	this.db.clear();
 };
 
 Crawler.prototype.queue = function(links, fromId, theme){
@@ -87,7 +92,6 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 
 	if(!this.ok){
 		if(this.stop_callback){
-			console.log("coucou");
 			this.stop_callback();
 		}
 		return;
@@ -112,7 +116,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 			continue;
 		}
 
-		if(db.findNode(link.link)){
+		if(parent.db.findNode(link.link)){
 			link_counter--;
 			console.log('\t\t\tDiminished because already found:', link_counter);
 			if(link_counter === 0){
@@ -157,7 +161,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 					edges: []
 				};
 				console.log("le node a un score de : ",result.node.score);
-				db.addNode(result.node.id, result.node.name, result.node.link, {
+				parent.db.addNode(result.node.id, result.node.name, result.node.link, {
 					crawl: result.node.crawl,
 					score: result.node.score,
 					theme: result.node.theme,
@@ -182,11 +186,11 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 							theme : true
 						}
 					});
-					db.addEdge(parentLinkId, result.node.id);
+					parent.db.addEdge(parentLinkId, result.node.id);
 				}
 
 				for(var l of res.links){
-					var n = db.findNode(l);
+					var n = parent.db.findNode(l);
 					if(n){
 						result.edges.push({
 							from: result.node.id,
@@ -205,7 +209,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 							}
 						});
 						
-						db.addEdge(result.node.id, n.id);
+						parent.db.addEdge(result.node.id, n.id);
 					}
 				}
 
@@ -215,7 +219,7 @@ Crawler.prototype.crawl = function(links, theme, previousLinkId, firstTime){
 				}
 
 				try{
-					db.save();
+					parent.db.save();
 				} catch(e) {
 					console.error('ERROR saving db:', e);
 				}

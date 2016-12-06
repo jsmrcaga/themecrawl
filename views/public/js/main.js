@@ -55,6 +55,9 @@ init.start = function initialize(){
 		}
 		if(message.end_success && message.end_success==true){
 			graph.clear();
+			document.querySelector('#crawled_nodes_counter').innerHTML = 0;
+			document.querySelector('#theme_nodes_counter').innerHTML = 0;
+			document.querySelector('#crawl_button').innerHTML = 'Crawl';
 		}
 
 		graph.build(message);
