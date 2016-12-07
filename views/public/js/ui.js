@@ -63,19 +63,13 @@
 	})
 
 	document.querySelector('#new_entry').addEventListener('click', function(){
-		var div = document.createElement('div');
-		div.classList.add('entry');
 
-		var input_field = document.createElement('div');
-		input_field.className = 'input-field col s6';
-		div.appendChild(input_field);
 
 		var input = document.createElement('input');
 		input.placeholder = 'Link';
 		input.classList.add('entry_link');
-		input_field.appendChild(input);
 
-		document.querySelector('.entry-points').appendChild(div);
+		document.querySelector('.entry-points-links').appendChild(input);
 	});
 
 	document.querySelector('#theme_selector').addEventListener('change', function(){
