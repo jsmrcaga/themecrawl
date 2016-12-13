@@ -11,6 +11,7 @@ var chalk = require('chalk');
 
 var URL = require('url').parse;
 
+var ThemeManager = require('../models/themeManager.js');
 var Themator = {};
 
 var ignore = require('../models/irrevelevantWords.json');
@@ -68,14 +69,7 @@ Themator.get = function(url, callback){
     }
 
 
-    var theme = {
-      name: "ThematorTheme",
-      dictionary : {
-	tt: 50,
-	ct: 50,
-	words: {}
-      }
-    };
+    var words = [];
 
     var wordTemp={};
     for(var i =0; i<a.length; i++) {
@@ -83,10 +77,12 @@ Themator.get = function(url, callback){
 	word: a[i],
 	weight: b[i]
       };
-      theme.dictionary.words += wordTemp;
+      words.push(wordTemp);
     }
 
-    console.log(JSON.stringify(theme));
+
+    ThemeManager.newTheme("ThematorTheme",word,50,50)
+
 		  //return callback(null, results);
   });
 

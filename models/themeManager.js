@@ -59,7 +59,7 @@ ThemeManager.loadTheme = function(id){
 
 ThemeManager.newTheme = function(name, dict, tt, ct){
 	var t = new models.Theme(name);
-	var d = new Dictionary(dict, tt, ct);
+	var d = new models.Dictionary(dict, tt, ct);
 	t.dictionary = d;
 	ThemeManager.themes.push(t);
 	return t;
