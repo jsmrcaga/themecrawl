@@ -52,8 +52,41 @@ Themator.get = function(url, callback){
       }
     }
     
-    console.log(word);
-		  
+    
+
+    var a = [], b = [], prev;
+
+    word.sort();
+    for ( var i = 0; i < word.length; i++ ) {
+        if ( word[i] !== prev ) {
+            a.push(word[i]);
+            b.push(1);
+        } else {
+            b[b.length-1]++;
+        }
+        prev = word[i];
+    }
+
+
+    var theme = {
+      name: "ThematorTheme",
+      dictionary : {
+	tt: 50,
+	ct: 50,
+	words: {}
+      }
+    };
+
+    var wordTemp={};
+    for(var i =0; i<a.length; i++) {
+      wordTemp = {
+	word: a[i],
+	weight: b[i]
+      };
+      theme.dictionary.words += wordTemp;
+    }
+
+    console.log(JSON.stringify(theme));
 		  //return callback(null, results);
   });
 

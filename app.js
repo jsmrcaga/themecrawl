@@ -64,7 +64,7 @@ app.engine('html', mustache());
 app.set('view engine', 'html');
 app.set('views', __dirname+'/views');
 app.use(express.static(__dirname+'/views/public'));
-
+/*
 var cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
@@ -77,7 +77,7 @@ app.use('/', function(req, res, next){
 	}
 	return next();
 })
-
+*/
 app.get('/', function (req, res, err){
 	var crawler = new Crawler();
 	var token = Crawler.generateUUID();
